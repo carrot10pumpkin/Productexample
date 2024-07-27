@@ -30,7 +30,8 @@ app.get('/product/:id', async (req,res) => {
 
         // include main image in gallery
         gallery.push({
-            url: `https://${prod.fields.mainImage.fields.file.url}?w=250`,
+            // url: `https://${prod.fields.mainImage.fields.file.url}?w=250`,
+            url: `https://${prod.fields.file.url}?w=250`,
         });
 
         // add gallery images
@@ -41,10 +42,10 @@ app.get('/product/:id', async (req,res) => {
         });
                  
         product = {
-            name: prod.fields.name,
-            desc:  documentToPlainTextString(prod.fields.description),
-            cat: prod.fields.category,
-            gallery
+            // name: prod.fields.name,
+            desc:  documentToPlainTextString(prod.fields.productDescription),
+            // cat: prod.fields.category,
+            gallery,
         };
 
         res.render('pages/product', {        
@@ -57,7 +58,7 @@ app.get('/product/:id', async (req,res) => {
 
 app.get('/products', async (req,res) => {
 
-    client.getEntries({ content_type: 'productCatalog' })
+    client.getEntries({ content_type: 'productPage' })
     .then((entries) => {
 
         //console.log( JSON.stringify( entries.items[0]) );
@@ -66,10 +67,11 @@ app.get('/products', async (req,res) => {
         entries.items.forEach((item) => { 
             catalog.push({
                 entryId: item.sys.id, // entry id
-                productName: item.fields.name,
-                productDesc:  documentToPlainTextString(item.fields.description),
-                productCat: item.fields.category,
-                productImg: `https://${item.fields.mainImage.fields.file.url}?w=100`,
+                // productName: item.fields.name,
+                productDesc:  documentToPlainTextString(item.fields.productDescription),
+                // productCat: item.fields.category,
+                // productImg: `https://${item.fields.mainImage.fields.file.url}?w=100`,
+                productImg: `https://${item.fields.file.url}?w=100`,
             });
 
         });  // end of forEach()
@@ -112,8 +114,8 @@ app.get('/', async(req, res) => {
             
             itemsTextWithPic.push( 
                 {
-                    text: documentToPlainTextString(item.fields.blogPostBody),
-                    picUrl: `https://${item.fields.blogPic.fields.file.url}?w=50`,
+                    text: documentToPlainTextString(item.fields.productDescription),
+                    picUrl: `https://${item.fields.file.url}?w=50`,
                     gallery // for 'media many files' field                   
                 }
             );          
